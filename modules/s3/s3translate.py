@@ -733,10 +733,10 @@ class TranslateReadFiles(object):
 
         html_js_file = open(filename, "rb")
         try:
-            html_js = html_js_file.read().decode("utf-8")
+            html_js = html_js_file.read().decode("utf-8").splitlines()
         except UnicodeDecodeError:
             try:
-                html_js = html_js_file.read().decode("latin-1")
+                html_js = html_js_file.read().decode("latin-1").splitlines()
             except UnicodeDecodeError:
                 current.log.warning("%s is not in either UTF-8 or LATIN-1 encoding" % filename)
                 return []
@@ -781,10 +781,9 @@ class TranslateReadFiles(object):
 
         if os.path.exists(user_file):
             f = open(user_file, "rb")
-            user_data = f.read().decode("utf-8")
+            user_data = f.read().decode("utf-8").splitlines()
             f.close()
             for line in user_data:
-                line = line.replace("\n", "").replace("\r", "")
                 strings.append((COMMENT, line))
 
         return strings
@@ -805,7 +804,7 @@ class TranslateReadFiles(object):
 
         if os.path.exists(user_file):
             f = open(user_file, "rb")
-            user_data = f.read().decode("utf-8")
+            user_data = f.read().decode("utf-8").splitlines()
             f.close()
             for line in user_data:
                 oappend(line)
@@ -814,7 +813,7 @@ class TranslateReadFiles(object):
         f = open(user_file, "a")
         for s in newstrings:
             if s not in oldstrings:
-                f.write(s)
+                f.write("%s\n" % s)
 
         f.close()
 
@@ -856,6 +855,11 @@ class TranslateReadFiles(object):
                             "stats_demographic_id",
                             )
 
+        # List of fields which have an S3ReusableField defined but we
+        # know we don't wish to translate
+        never_translate = ("gis_location_id",
+                           )
+
         # Use bulk importer class to parse tasks.cfg in template folder
         bi = S3BulkImporter()
         S = Strings()
@@ -879,6 +883,8 @@ class TranslateReadFiles(object):
                 if fieldname in always_translate:
                     translate = True
                     represent = Storage(fields = ["name"])
+                elif fieldname in never_translate:
+                    continue
                 elif hasattr(s3db, fieldname) is False:
                     continue
                 else:
