@@ -43,14 +43,14 @@ def config(settings):
     # Should users be allowed to register themselves?
     #settings.security.self_registration = False
     # Do new users need to verify their email address?
-    settings.auth.registration_requires_verification = True
+    #settings.auth.registration_requires_verification = True
     # Do new users need to be approved by an administrator prior to being able to login?
-    settings.auth.registration_requires_approval = True
+    #settings.auth.registration_requires_approval = True
     # Disable welcome-emails to newly registered users
     #settings.auth.registration_welcome_email = False
 
     # Approval emails get sent to all admins
-    settings.mail.approver = "ADMIN"
+    #settings.mail.approver = "ADMIN"
 
     # Allow a new user to be linked to a record (and a new record will be created if it doesn't already exist)
     settings.auth.registration_link_user_to = {"staff": T("Staff"),
@@ -60,7 +60,7 @@ def config(settings):
     settings.auth.registration_link_user_to_default = ["staff"]
 
     # Always notify the approver of a new (verified) user, even if the user is automatically approved
-    #settings.auth.always_notify_approver = False
+    settings.auth.always_notify_approver = False
 
     # The name of the teams that users are added to when they opt-in to receive alerts
     #settings.auth.opt_in_team_list = ["Updates"]
